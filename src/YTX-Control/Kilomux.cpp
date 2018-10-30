@@ -15,19 +15,20 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
+#include <Arduino.h>
 #include "Kilomux.h"
+//#include "Kilomux.h"
 
 
-void setup{
-
+void setup(){
+    SerialUSB.begin(115200);
+    analog.init();
 }
 
-int main(){
-    setup();
+void loop(){
 
     while(1){
-        Analog.update();
+        analog.update();
     }
 
 }

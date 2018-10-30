@@ -16,9 +16,25 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "Arduino.h"
+#include <Arduino.h>
 #include "Analog.h"
 
+// Variables
+    // Address lines for multiplexer
+    const int _S0 = 2;
+    const int _S1 = 3;
+    const int _S2 = 4;
+    const int _S3 = 5;
+    // Input signal of multiplexers
+    const byte InMuxA = A1;
+    const byte InMuxB = A2;
+    const byte InMuxC = A3;
+    const byte InMuxD = A4;
+    // Fast read flag
+    bool fastReadEnabled = true;
+    // Mux readings
+    unsigned int muxReadings[NUM_MUX][NUM_MUX_CHANNELS];                  // Present readings
+    unsigned int muxPrevReadings[NUM_MUX][NUM_MUX_CHANNELS];              // Previous readings
 /*
   Method:         Analog
   Description:    Class constructor. Sets everything for a Kilomux Shield to work properly.
@@ -30,7 +46,7 @@ Analog::Analog(){
 }
 
 void Analog::init(){
-     // Set output pins for multiplexers
+    // Set output pins for multiplexers
     pinMode(_S0, OUTPUT);
     pinMode(_S1, OUTPUT);
     pinMode(_S2, OUTPUT);
@@ -48,9 +64,17 @@ void Analog::init(){
     }
 }
 
-int Analog::update(void){
-
+void Analog::update(){
+  SerialUSB.println(analogRead(A0));
+  delay(2000);
 }
+
+
+void ADCsync() {
+  while (ADC->STATUS.bit.SYNCBUSY == 1); //Just wait till the ADC is free
+}
+
+void Analog::setFastRead(bool fast) { fastReadEnabled = fast; return; };
 
 //##############################################################################
 // Fast analogue read analogReadFast()  
@@ -60,7 +84,7 @@ int Analog::update(void){
 //  Mk. 2 - has some more bits removed for speed up
 //##############################################################################
 uint32_t Analog::analogReadFast(byte ADCpin) {
-  selAnalog(ADCpin);
+  selectAnalogPin(ADCpin);
   ADC->INTFLAG.bit.RESRDY = 1;              // Data ready flag cleared
   ADCsync();
   ADC->SWTRIG.bit.START = 1;                // Start ADC conversion
@@ -126,6 +150,6 @@ uint32_t Analog::selectAnalogPin(uint32_t ulPin){      // Selects the analog inp
   ADC->INPUTCTRL.bit.MUXPOS = g_APinDescription[ulPin].ulADCChannelNumber; // Selection for the positive ADC input
 }
 
-static void ADCsync() {
-  while (ADC->STATUS.bit.SYNCBUSY == 1); //Just wait till the ADC is free
-}
+
+
+Analog analog;

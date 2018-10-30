@@ -18,4 +18,5 @@
 
 #pragma once
 
-#include "analog/Analog.h"
+#include <Arduino.h>
+#include "Analog/Analog.h"

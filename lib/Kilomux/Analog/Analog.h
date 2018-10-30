@@ -27,35 +27,20 @@ class Analog{
 public:                             // These are methods and variables accesible from Arduino IDE
     Analog();                      // Class constructor
     // Methods
-    static int init(void);       // Read analog data from multiplexer          
-    static int update(void);       // Read analog data from multiplexer          
+    static void init();       // Read analog data from multiplexer          
+    static void update();       // Read analog data from multiplexer          
 
     static unsigned int isNoise(unsigned int newValue, unsigned int prevValue, bool direction);  // Method to determine if the reading is noise or a true change    
 
-    inline void setFastRead(bool fast) { fastReadEnabled = fast; return; };
-    
-    // Mux readings
-    unsigned int muxReadings[NUM_MUX][NUM_MUX_CHANNELS];                  // Present readings
-    unsigned int muxPrevReadings[NUM_MUX][NUM_MUX_CHANNELS];              // Previous readings
+    static void setFastRead(bool fast);
 
 private:
-    // Variables
-    // Address lines for multiplexer
-    const int _S0 = 2;
-    const int _S1 = 3;
-    const int _S2 = 4;
-    const int _S3 = 5;
-    // Input signal of multiplexers
-    const byte InMuxA = A1;
-    const byte InMuxB = A2;
-    const byte InMuxC = A3;
-    const byte InMuxD = A4;
-    // Fast read flag
-    bool fastReadEnabled = true;
 
     // Methods
     // FAST ADC
     static uint32_t analogReadFast(byte ADCpin);
     static uint32_t selectAnalogPin(uint32_t ulPin);
     static uint32_t fastADCsetup();
-}
+};
+
+extern Analog analog;
